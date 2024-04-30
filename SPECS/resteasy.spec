@@ -3,7 +3,7 @@
 
 Name:           resteasy
 Version:        3.0.26
-Release:        15%{?dist}
+Release:        19%{?dist}
 Summary:        Framework for RESTful Web services and Java applications
 License:        ASL 2.0
 URL:            http://resteasy.jboss.org/
@@ -50,9 +50,10 @@ Obsoletes:      %{name} < %{version}-%{release}
 Conflicts:      %{name} < %{version}-%{release}
 Provides:       %{name} = %{version}-%{release}
 
-Requires:       pki-%{name}-client            = %{version}-%{release}
-Requires:       pki-%{name}-core              = %{version}-%{release}
-Requires:       pki-%{name}-jackson2-provider = %{version}-%{release}
+Recommends:       pki-%{name}-client              = %{version}-%{release}
+Recommends:       pki-%{name}-core                = %{version}-%{release}
+Recommends:       pki-%{name}-jackson2-provider   = %{version}-%{release}
+Recommends:       pki-%{name}-servlet-initializer = %{version}-%{release}
 
 # subpackages removed in fedora 32
 Obsoletes:      %{name}-fastinfoset-provider < 3.0.26-1
@@ -72,6 +73,7 @@ Obsoletes:      %{name}-yaml-provider < 3.0.26-1
 %package -n     pki-%{name}-core
 Summary:        Core modules for %{name}
 Obsoletes:      resteasy-jaxrs-api < 3.0.7
+Obsoletes:      pki-%{name} < %{version}-%{release}
 Obsoletes:      %{name}-core < %{version}-%{release}
 Conflicts:      %{name}-core < %{version}-%{release}
 Provides:       %{name}-core = %{version}-%{release}
@@ -81,6 +83,7 @@ Provides:       %{name}-core = %{version}-%{release}
 
 %package -n     pki-%{name}-jackson2-provider
 Summary:        Module jackson2-provider for %{name}
+Obsoletes:      pki-%{name} < %{version}-%{release}
 Obsoletes:      %{name}-jackson2-provider < %{version}-%{release}
 Conflicts:      %{name}-jackson2-provider < %{version}-%{release}
 Provides:       %{name}-jackson2-provider = %{version}-%{release}
@@ -90,11 +93,22 @@ Provides:       %{name}-jackson2-provider = %{version}-%{release}
 
 %package -n     pki-%{name}-client
 Summary:        Client for %{name}
+Obsoletes:      pki-%{name} < %{version}-%{release}
 Obsoletes:      %{name}-client < %{version}-%{release}
 Conflicts:      %{name}-client < %{version}-%{release}
 Provides:       %{name}-client = %{version}-%{release}
 
 %description -n pki-%{name}-client
+%{extdesc} %{summary}.
+
+%package -n     pki-%{name}-servlet-initializer
+Summary:        %{name} Servlet Initializer
+Obsoletes:      pki-%{name} < %{version}-%{release}
+Obsoletes:      %{name}-servlet-initializer < %{version}-%{release}
+Conflicts:      %{name}-servlet-initializer < %{version}-%{release}
+Provides:       %{name}-servlet-initializer = %{version}-%{release}
+
+%description -n pki-%{name}-servlet-initializer
 %{extdesc} %{summary}.
 
 %prep
@@ -113,7 +127,6 @@ Provides:       %{name}-client = %{version}-%{release}
 %pom_disable_module resteasy-jsapi
 %pom_disable_module resteasy-jsapi-testing
 %pom_disable_module resteasy-links
-%pom_disable_module resteasy-servlet-initializer
 %pom_disable_module resteasy-spring
 %pom_disable_module resteasy-wadl
 %pom_disable_module resteasy-wadl-undertow-connector
@@ -169,12 +182,14 @@ find -name '*.jar' -print -delete
 %pom_remove_dep junit:junit providers/resteasy-atom
 %pom_remove_dep junit:junit providers/jaxb
 %pom_remove_dep junit:junit resteasy-jaxrs
+%pom_remove_dep junit:junit resteasy-servlet-initializer
 
 # remove log4j dependency
 %pom_remove_dep log4j:log4j resteasy-jaxrs
 
 # depend on servlet-api from pki-servlet-4.0-api
 %pom_change_dep org.jboss.spec.javax.servlet: org.apache.tomcat:tomcat-servlet-api resteasy-jaxrs
+%pom_change_dep org.jboss.spec.javax.servlet: org.apache.tomcat:tomcat-servlet-api resteasy-servlet-initializer
 %pom_change_dep org.jboss.spec.javax.servlet: org.apache.tomcat:tomcat-servlet-api providers/abdera-atom
 %pom_change_dep org.jboss.spec.javax.servlet: org.apache.tomcat:tomcat-servlet-api providers/jaxb
 %pom_change_dep org.jboss.spec.javax.servlet: org.apache.tomcat:tomcat-servlet-api providers/jackson2
@@ -190,6 +205,7 @@ find -name '*.jar' -print -delete
 %mvn_package ":resteasy-pom" core
 %mvn_package ":resteasy-jackson2-provider" jackson2-provider
 %mvn_package ":resteasy-client" client
+%mvn_package ":resteasy-servlet-initializer" servlet-initializer
 
 # Disable useless artifacts generation, package __noinstall do not work
 %pom_add_plugin org.apache.maven.plugins:maven-source-plugin . '
@@ -216,7 +232,22 @@ find -name '*.jar' -print -delete
 %files -n pki-%{name}-client -f .mfiles-client
 %license License.html
 
+%files -n pki-%{name}-servlet-initializer -f .mfiles-servlet-initializer
+%license License.html
+
 %changelog
+* Wed Wed 07 2024 Red Hat PKI Team <rhcs-maint@redhat.com> - 3.0.26-19
+- Fix obsolete for main resteasy to each subpackage
+
+* Wed Jan 31 2024 Red Hat PKI Team <rhcs-maint@redhat.com> - 3.0.26-18
+- Add obsolete for main resteasy to each subpackage
+
+* Tue Jan 30 2024 Red Hat PKI Team <rhcs-maint@redhat.com> - 3.0.26-17
+- Make weak requirement to subpackages
+
+* Mon Dec 11 2023 Red Hat PKI Team <rhcs-maint@redhat.com> - 3.0.26-16
+- Enable servlet-initializer subpackage
+
 * Fri Sep 24 2021 Red Hat PKI Team <rhcs-maint@redhat.com> - 3.0.26-15
 - Drop pki-resteasy-jaxb-provider
 
