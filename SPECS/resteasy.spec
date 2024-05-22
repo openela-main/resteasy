@@ -3,7 +3,7 @@
 
 Name:           resteasy
 Version:        3.0.26
-Release:        6%{?dist}
+Release:        7%{?dist}
 Summary:        Framework for RESTful Web services and Java applications
 License:        ASL 2.0
 URL:            http://resteasy.jboss.org/
@@ -33,8 +33,8 @@ BuildRequires:  mvn(org.jboss.spec.javax.ws.rs:jboss-jaxrs-api_2.0_spec)
 BuildRequires:  mvn(org.slf4j:slf4j-api)
 
 # Require the Servlet API 4.0
-BuildRequires:  pki-servlet-4.0-api
-Requires:       pki-servlet-4.0-api
+BuildRequires:  tomcat-servlet-4.0-api
+Requires:       tomcat-servlet-4.0-api
 
 #XXX just to make pki-core build. pki-core should switch to mvn requires
 Provides:    resteasy-atom-provider
@@ -119,7 +119,7 @@ find -name '*.jar' -print -delete
 %pom_remove_dep junit:junit providers/jaxb
 %pom_remove_dep junit:junit resteasy-jaxrs
 
-# depend on servlet-api from pki-servlet-4.0-api
+# depend on servlet-api from tomcat-servlet-4.0-api
 %pom_change_dep org.jboss.spec.javax.servlet: org.apache.tomcat:tomcat-servlet-api resteasy-jaxrs
 %pom_change_dep org.jboss.spec.javax.servlet: org.apache.tomcat:tomcat-servlet-api providers/abdera-atom
 %pom_change_dep org.jboss.spec.javax.servlet: org.apache.tomcat:tomcat-servlet-api providers/jaxb
@@ -182,6 +182,9 @@ done
 %files javadoc -f .mfiles-javadoc
 
 %changelog
+* Tue Jan 09 2024 Red Hat PKI Team <rhcs-maint@redhat.com> - 3.0.26-7
+- RHEL-16724: Replace pki-servlet-4.0-api with tomcat-servlet-4.0-api
+
 * Mon Nov 30 2020 Alexander Scheel <ascheel@redhat.com> - 3.0.26-6
 - CVE-2020-1695: Improper validation of response header in MediaTypeHeaderDelegate.java class
   Resolves: rh-bz#1845548
