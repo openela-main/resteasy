@@ -3,13 +3,14 @@
 
 Name:           resteasy
 Version:        3.0.26
-Release:        19%{?dist}
+Release:        20%{?dist}
 Summary:        Framework for RESTful Web services and Java applications
 License:        ASL 2.0
 URL:            http://resteasy.jboss.org/
 Source0:        https://github.com/resteasy/Resteasy/archive/%{namedversion}/%{name}-%{namedversion}.tar.gz
 Patch1:         0001-RESTEASY-2559-Improper-validation-of-response-header.patch
 Patch2:         0001-Remove-Log4jLogger.patch
+Patch3:         0001-CVE-2026-17615-Fix-XXE-in-SourceProvider-via-secure.patch
 
 BuildArch:      noarch
 
@@ -236,7 +237,11 @@ find -name '*.jar' -print -delete
 %license License.html
 
 %changelog
-* Wed Wed 07 2024 Red Hat PKI Team <rhcs-maint@redhat.com> - 3.0.26-19
+* Mon Sep 21 2026 Red Hat PKI Team <rhcs-maint@redhat.com> - 3.0.26-20
+- Fix CVE-2026-17615: SourceProvider remote unauthenticated file read
+  Resolves: RHEL-251553
+
+* Wed Feb 07 2024 Red Hat PKI Team <rhcs-maint@redhat.com> - 3.0.26-19
 - Fix obsolete for main resteasy to each subpackage
 
 * Wed Jan 31 2024 Red Hat PKI Team <rhcs-maint@redhat.com> - 3.0.26-18
