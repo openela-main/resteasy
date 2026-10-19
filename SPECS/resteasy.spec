@@ -3,7 +3,7 @@
 
 Name:           resteasy
 Version:        3.0.26
-Release:        20%{?dist}
+Release:        20%{?dist}.1
 Summary:        Framework for RESTful Web services and Java applications
 License:        ASL 2.0
 URL:            http://resteasy.jboss.org/
@@ -11,6 +11,8 @@ Source0:        https://github.com/resteasy/Resteasy/archive/%{namedversion}/%{n
 Patch1:         0001-RESTEASY-2559-Improper-validation-of-response-header.patch
 Patch2:         0001-Remove-Log4jLogger.patch
 Patch3:         0001-CVE-2026-17615-Fix-XXE-in-SourceProvider-via-secure.patch
+Patch4:         0001-RESTEASY-3796-Do-not-allow-the-CORS-allow-credential.patch
+Patch5:         0001-RESTEASY-3793-Add-an-option-to-validate-an-estimated.patch
 
 BuildArch:      noarch
 
@@ -237,6 +239,12 @@ find -name '*.jar' -print -delete
 %license License.html
 
 %changelog
+* Wed Oct 14 2026 Red Hat PKI Team <rhcs-maint@redhat.com> - 3.0.26-20.1
+- Fix CVE-2026-89058: CorsFilter Reflects Arbitrary Origin with Credentials under Wildcard Config
+- Fix CVE-2026-89059: IIOImageProvider Unbounded Image Decode (Decompression-Bomb DoS) 
+- Resolves: RHEL-278032
+- Resolves: RHEL-277999
+
 * Mon Sep 21 2026 Red Hat PKI Team <rhcs-maint@redhat.com> - 3.0.26-20
 - Fix CVE-2026-17615: SourceProvider remote unauthenticated file read
   Resolves: RHEL-251553
